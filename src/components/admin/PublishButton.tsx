@@ -8,15 +8,19 @@ export function PublishButton() {
   const handlePublish = async () => {
     setIsPublishing(true);
     try {
-      const res = await fetch('/api/publish', {
-        method: 'POST'
-      });
-      const data = await res.json();
+      const webhookUrl = process.env.NEXT_PUBLIC_CLOUDFLARE_DEPLOY_WEBHOOK_URL;
+      
+      if (!webhookUrl) {
+        alert('Please configure NEXT_PUBLIC_CLOUDFLARE_DEPLOY_WEBHOOK_URL in .env.local');
+        return;
+      }
+
+      const res = await fetch(webhookUrl, { method: 'POST' });
       
       if (res.ok) {
-        alert(data.message || 'Site published successfully!');
+        alert('Site publish triggered! Changes will be live in 1-2 minutes.');
       } else {
-        alert(data.error || 'Failed to publish site.');
+        alert('Failed to trigger Cloudflare build hook.');
       }
     } catch (error) {
       alert('An error occurred during publishing.');
