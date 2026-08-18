@@ -2,18 +2,10 @@ import Link from 'next/link';
 import contentData from "@/data/content.json";
 
 export function Projects() {
-  const { projects } = contentData;
+  const { projects, projectsList } = contentData;
   
-  // Note: Individual projects are still mock here since they will be derived from a separate CMS collection/file
-  const projectItems = [
-    {
-      title: "Star Excellent Academy",
-      category: "Web Design & Development",
-      description: "A comprehensive digital platform for an educational institution — featuring dynamic content management, responsive design, and an admin CMS built on our API-hydration architecture.",
-      tech: ["Next.js", "Tailwind CSS", "Firebase"],
-      link: "#",
-    }
-  ];
+  // Filter for ACTIVE projects only
+  const activeProjects = (projectsList || []).filter(p => p.status === 'ACTIVE');
 
   return (
     <section id="projects" className="py-24 bg-secondary/30">
@@ -32,26 +24,26 @@ export function Projects() {
         </div>
         
         <div className="grid gap-16">
-          {projectItems.map((project, index) => (
+          {activeProjects.map((project, index) => (
             <div key={index} className="grid md:grid-cols-2 gap-12 items-center group">
               <div className="order-2 md:order-1 flex flex-col gap-6">
                 <span className="text-sm font-medium tracking-wider uppercase text-primary">
                   {project.category}
                 </span>
-                <h3 className="text-3xl md:text-4xl font-bold">{project.title}</h3>
+                <h3 className="text-3xl md:text-4xl font-bold">{project.name}</h3>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  {project.description}
+                  {project.description || project.shortDescription}
                 </p>
                 
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {project.tech.map((tag, i) => (
+                  {(project.tech || []).map((tag: string, i: number) => (
                     <span key={i} className="px-3 py-1 rounded-md bg-secondary text-secondary-foreground text-xs font-medium">
                       {tag}
                     </span>
                   ))}
                 </div>
                 
-                <Link href={project.link} className="mt-4 inline-flex items-center text-primary font-medium hover:underline underline-offset-4">
+                <Link href={`/projects/${project.slug}`} className="mt-4 inline-flex items-center text-primary font-medium hover:underline underline-offset-4">
                   View Project
                   <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M5 12h14"></path>

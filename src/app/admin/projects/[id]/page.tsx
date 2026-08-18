@@ -1,24 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react';
 import { db } from '@/core/firebase/config';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-export default function ProjectEditor() {
+export default function EditProject({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
+    id: '',
     name: '',
     slug: '',
     status: 'DRAFT',
     categoryId: '',
+    category: '',
     shortDescription: '',
     description: '',
     tech: [] as string[],
+    lastUpdated: ''
   });
+
+  useEffect(() => {
+    async function fetchProject() {
+      try {
+        const docRef = doc(db, 'config', 'siteSettings');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists() && docSnap.data().projectsList) {
+          const project = docSnap.data().projectsList.find((p: any) => p.id === params.id);
+          if (project) {
+            setFormData({
+              ...project,
+              categoryId: project.category || '', // Use category as categoryId for the select dropdown
+            });
+          } else {
+            alert("Project not found!");
+            router.push('/admin/projects');
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch project:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchProject();
+  }, [params.id, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,21 +64,46 @@ export default function ProjectEditor() {
       const existingData = docSnap.exists() ? docSnap.data() : {};
       const projectsList = existingData.projectsList || [];
       
-      const newProject = {
-        id: Date.now().toString(),
+      const updatedProject = {
         ...formData,
-        category: formData.categoryId, // Map categoryId to category string for now
+        category: formData.categoryId,
         lastUpdated: new Date().toISOString().split('T')[0]
       };
       
-      await setDoc(docRef, { projectsList: [...projectsList, newProject] }, { merge: true });
+      const updatedList = projectsList.map((p: any) => p.id === formData.id ? updatedProject : p);
+      
+      await setDoc(docRef, { projectsList: updatedList }, { merge: true });
       router.push('/admin/projects');
     } catch (err) {
       console.error(err);
-      alert("Failed to save project.");
+      alert("Failed to update project.");
       setIsSaving(false);
     }
   };
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this project? This cannot be undone.")) return;
+    setIsSaving(true);
+    try {
+      const docRef = doc(db, 'config', 'siteSettings');
+      const docSnap = await getDoc(docRef);
+      const existingData = docSnap.exists() ? docSnap.data() : {};
+      const projectsList = existingData.projectsList || [];
+      
+      const updatedList = projectsList.filter((p: any) => p.id !== formData.id);
+      
+      await setDoc(docRef, { projectsList: updatedList }, { merge: true });
+      router.push('/admin/projects');
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete project.");
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-64"><Loader2 className="animate-spin text-primary w-8 h-8" /></div>;
+  }
 
   return (
     <div className="flex flex-col gap-8 max-w-4xl mx-auto">
@@ -58,18 +113,28 @@ export default function ProjectEditor() {
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h2 className="text-3xl font-bold tracking-tight">Create Project</h2>
-            <p className="text-muted-foreground mt-1">Draft a new portfolio piece.</p>
+            <h2 className="text-3xl font-bold tracking-tight">Edit Project</h2>
+            <p className="text-muted-foreground mt-1">Update your portfolio piece.</p>
           </div>
         </div>
-        <button 
-          onClick={handleSave}
-          disabled={isSaving}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50"
-        >
-          {isSaving ? <Loader2 className="animate-spin w-4 h-4" /> : <Save size={18} />}
-          Save Draft
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleDelete}
+            disabled={isSaving}
+            className="flex items-center gap-2 px-4 py-2 bg-destructive/10 text-destructive font-medium rounded-md hover:bg-destructive/20 transition-colors disabled:opacity-50"
+          >
+            <Trash2 size={18} />
+            Delete
+          </button>
+          <button 
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50"
+          >
+            {isSaving ? <Loader2 className="animate-spin w-4 h-4" /> : <Save size={18} />}
+            Save Changes
+          </button>
+        </div>
       </div>
 
       <form className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -142,9 +207,9 @@ export default function ProjectEditor() {
                 className="px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 <option value="">Select a category</option>
-                <option value="web-design">Web Design</option>
-                <option value="graphic-design">Graphic Design</option>
-                <option value="video-editing">Video Editing</option>
+                <option value="Web Design">Web Design</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="Video Editing">Video Editing</option>
               </select>
             </div>
           </div>

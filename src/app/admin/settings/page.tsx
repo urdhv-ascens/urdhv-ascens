@@ -1,22 +1,40 @@
 'use client';
 
-import { useState } from 'react';
-import { Save } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Save, Loader2 } from 'lucide-react';
 import contentData from "@/data/content.json";
 import { db } from '@/core/firebase/config';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function SiteSettings() {
-  // Initialize with the static content
   const [data, setData] = useState(contentData);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const docRef = doc(db, 'config', 'siteSettings');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          // Merge with static data in case there are missing fields
+          setData({ ...contentData, ...docSnap.data() } as any);
+        }
+      } catch (err) {
+        console.error("Failed to fetch live settings:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
     try {
-      // Save data to Firestore (Control Plane backend)
-      await setDoc(doc(db, 'config', 'siteSettings'), data);
+      // Use merge: true so we don't overwrite projects or services if we are only saving settings
+      await setDoc(doc(db, 'config', 'siteSettings'), data, { merge: true });
       alert("Settings saved to Firestore successfully! Click 'Publish' in the header to push these changes to the live site.");
     } catch (err) {
       console.error(err);
@@ -25,6 +43,10 @@ export default function SiteSettings() {
       setIsSaving(false);
     }
   };
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-64"><Loader2 className="animate-spin text-primary w-8 h-8" /></div>;
+  }
 
   return (
     <div className="flex flex-col gap-8 max-w-5xl mx-auto pb-24">

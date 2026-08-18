@@ -80,6 +80,19 @@
     "title": "Projects",
     "description": "A curated selection of work that speaks for itself."
   },
+  "projectsList": [
+    {
+      "id": "1",
+      "name": "Star Excellent Academy",
+      "slug": "star-excellent-academy",
+      "status": "ACTIVE",
+      "category": "Web Design",
+      "shortDescription": "A comprehensive digital platform for an educational institution.",
+      "description": "A comprehensive digital platform for an educational institution — featuring dynamic content management, responsive design, and an admin CMS built on our API-hydration architecture.",
+      "tech": ["Next.js", "Tailwind CSS", "Firebase"],
+      "lastUpdated": "2026-08-18"
+    }
+  ],
   "contact": {
     "tagline": "Get In Touch",
     "title": "Start a Dialogue",
