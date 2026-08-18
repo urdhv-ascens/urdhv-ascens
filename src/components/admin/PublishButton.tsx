@@ -8,7 +8,8 @@ export function PublishButton() {
   const handlePublish = async () => {
     setIsPublishing(true);
     try {
-      const webhookUrl = process.env.NEXT_PUBLIC_CLOUDFLARE_DEPLOY_WEBHOOK_URL;
+      // Fallback to the hardcoded URL if environment variable is missing
+      const webhookUrl = process.env.NEXT_PUBLIC_CLOUDFLARE_DEPLOY_WEBHOOK_URL || 'https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/65cdffce-bf30-4481-bd90-9191fa4be082';
       
       if (!webhookUrl) {
         alert('Please configure NEXT_PUBLIC_CLOUDFLARE_DEPLOY_WEBHOOK_URL in .env.local');
