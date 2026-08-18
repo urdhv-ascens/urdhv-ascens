@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react';
 import { db } from '@/core/firebase/config';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-export default function EditProject({ params }: { params: { id: string } }) {
+function EditProjectContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get('id');
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -26,11 +28,12 @@ export default function EditProject({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     async function fetchProject() {
+      if (!projectId) return;
       try {
         const docRef = doc(db, 'config', 'siteSettings');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists() && docSnap.data().projectsList) {
-          const project = docSnap.data().projectsList.find((p: any) => p.id === params.id);
+          const project = docSnap.data().projectsList.find((p: any) => p.id === projectId);
           if (project) {
             setFormData({
               ...project,
@@ -48,7 +51,7 @@ export default function EditProject({ params }: { params: { id: string } }) {
       }
     }
     fetchProject();
-  }, [params.id, router]);
+  }, [projectId, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -224,5 +227,13 @@ export default function EditProject({ params }: { params: { id: string } }) {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function EditProject() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center h-64"><Loader2 className="animate-spin text-primary w-8 h-8" /></div>}>
+      <EditProjectContent />
+    </Suspense>
   );
 }

@@ -75,7 +75,7 @@ export default function ProjectsCMS() {
                 <td className="px-6 py-4 text-muted-foreground">{project.category}</td>
                 <td className="px-6 py-4 text-muted-foreground text-sm">{project.lastUpdated || 'Unknown'}</td>
                 <td className="px-6 py-4 text-right">
-                  <Link href={`/admin/projects/${project.id}`} className="text-sm font-medium text-primary hover:underline">
+                  <Link href={`/admin/projects/edit?id=${project.id}`} className="text-sm font-medium text-primary hover:underline">
                     Edit
                   </Link>
                 </td>
