@@ -7,7 +7,7 @@ import { db } from '@/core/firebase/config';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function SiteSettings() {
-  const [data, setData] = useState(contentData);
+  const [data, setData] = useState<any>(contentData);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
