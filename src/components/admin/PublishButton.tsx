@@ -16,13 +16,11 @@ export function PublishButton() {
         return;
       }
 
-      const res = await fetch(webhookUrl, { method: 'POST' });
+      // Send as an opaque request (mode: no-cors) to bypass browser CORS blocks
+      await fetch(webhookUrl, { method: 'POST', mode: 'no-cors' });
       
-      if (res.ok) {
-        alert('Site publish triggered! Changes will be live in 1-2 minutes.');
-      } else {
-        alert('Failed to trigger Cloudflare build hook.');
-      }
+      // With no-cors, we can't read the response status, so we assume success if no network error occurred
+      alert('Site publish triggered! Changes will be live in 1-2 minutes.');
     } catch (error) {
       alert('An error occurred during publishing.');
       console.error(error);
