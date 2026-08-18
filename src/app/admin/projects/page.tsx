@@ -31,6 +31,8 @@ export default function ProjectsCMS() {
   if (isLoading) {
     return <div className="flex justify-center items-center h-64"><Loader2 className="animate-spin text-primary w-8 h-8" /></div>;
   }
+
+  return (
     <div className="flex flex-col gap-8">
       <div className="flex justify-between items-center">
         <div>
