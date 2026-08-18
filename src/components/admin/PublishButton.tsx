@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { db } from '@/core/firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 
 export function PublishButton() {
   const [isPublishing, setIsPublishing] = useState(false);
@@ -8,11 +10,18 @@ export function PublishButton() {
   const handlePublish = async () => {
     setIsPublishing(true);
     try {
-      // Fallback to the hardcoded URL if environment variable is missing
-      const webhookUrl = process.env.NEXT_PUBLIC_CLOUDFLARE_DEPLOY_WEBHOOK_URL || 'https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/65cdffce-bf30-4481-bd90-9191fa4be082';
+      // Fetch the Webhook URL from Firestore first
+      const docRef = doc(db, 'config', 'siteSettings');
+      const docSnap = await getDoc(docRef);
+      
+      let webhookUrl = process.env.NEXT_PUBLIC_CLOUDFLARE_DEPLOY_WEBHOOK_URL;
+      
+      if (docSnap.exists() && docSnap.data().cloudflareWebhookUrl) {
+        webhookUrl = docSnap.data().cloudflareWebhookUrl;
+      }
       
       if (!webhookUrl) {
-        alert('Please configure NEXT_PUBLIC_CLOUDFLARE_DEPLOY_WEBHOOK_URL in .env.local');
+        alert('Please configure the Cloudflare Webhook URL in the Admin Panel -> Settings tab.');
         return;
       }
 

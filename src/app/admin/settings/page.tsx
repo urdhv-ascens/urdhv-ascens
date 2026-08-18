@@ -180,6 +180,24 @@ export default function SiteSettings() {
           </div>
         </section>
 
+        {/* Deployment Settings */}
+        <section className="bg-card border border-border rounded-xl p-6 flex flex-col gap-6">
+          <h3 className="text-xl font-semibold border-b border-border pb-4">Deployment Settings</h3>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">Cloudflare Webhook URL</label>
+            <input 
+              type="url" 
+              value={data.cloudflareWebhookUrl || ''} 
+              onChange={e => setData({...data, cloudflareWebhookUrl: e.target.value})}
+              placeholder="https://api.cloudflare.com/client/v4/pages/webhooks/..."
+              className="px-4 py-2 bg-background border border-border rounded-lg" 
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Paste the Deploy Hook URL from Cloudflare to make the Publish button work without .env files.
+            </p>
+          </div>
+        </section>
+
       </div>
     </div>
   );
