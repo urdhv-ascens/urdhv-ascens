@@ -1,0 +1,92 @@
+{
+  "siteSettings": {
+    "companyName": "Ūrdhv Ascens"
+  },
+  "hero": {
+    "tagline": "A Digital Aesthetics & Functionality Hub",
+    "title": "We build brands that ascend.",
+    "description": "Ūrdhv Ascens delivers enterprise-grade design, digital presence management, and technical solutions for brands that demand distinction."
+  },
+  "about": {
+    "title": "About Us",
+    "description": "At Ūrdhv Ascens, we don't just build websites or design logos — we architect digital legacies. We believe that aesthetics without robust functionality is merely decoration, and robust functionality without aesthetics is a missed connection. Our philosophy bridges this gap, delivering digital experiences that are as performant as they are beautiful.",
+    "stats": [
+      {
+        "value": "24+",
+        "label": "Enterprise Projects"
+      },
+      {
+        "value": "100%",
+        "label": "Client Retention"
+      },
+      {
+        "value": "4",
+        "label": "Core Disciplines"
+      }
+    ]
+  },
+  "capabilities": {
+    "tagline": "What We Do",
+    "title": "Capabilities",
+    "description": "One nexus for every digital solution — engineered with intent.",
+    "list": [
+      {
+        "title": "Web Design",
+        "description": "Interfaces that command attention. Every layout, every interaction — meticulously crafted to convert and captivate.",
+        "icon": "Monitor"
+      },
+      {
+        "title": "Graphic Design",
+        "description": "Visual identities that transcend the ordinary. From brand systems to marketing collateral — designed to distinguish.",
+        "icon": "PenTool"
+      },
+      {
+        "title": "Video Editing",
+        "description": "Motion that moves. Cinematic post-production with the precision of a studio and the agility of a boutique.",
+        "icon": "Video"
+      },
+      {
+        "title": "Social Media",
+        "description": "Strategic presence management. Content calendars, audience cultivation, and analytics-driven growth — handled entirely.",
+        "icon": "Smartphone"
+      }
+    ]
+  },
+  "services": {
+    "tagline": "How We Serve",
+    "title": "Services",
+    "description": "Tailored engagements for every stage of your digital evolution.",
+    "list": [
+      {
+        "title": "Website Design & Development",
+        "description": "Custom-built websites that function as digital flagships. Responsive, performant, and unmistakably yours — from concept to deployment."
+      },
+      {
+        "title": "Brand Identity & Visual Systems",
+        "description": "Comprehensive visual identities — logos, typography systems, color architectures, and brand guidelines engineered for recognition."
+      },
+      {
+        "title": "Content Production",
+        "description": "End-to-end content creation: video editing, motion graphics, photography, and copywriting — all calibrated to your brand voice."
+      },
+      {
+        "title": "Digital Strategy & Management",
+        "description": "Social media management, analytics reporting, SEO optimization, and growth strategy — measured, refined, and relentless."
+      }
+    ]
+  },
+  "projects": {
+    "tagline": "Selected Work",
+    "title": "Projects",
+    "description": "A curated selection of work that speaks for itself."
+  },
+  "contact": {
+    "tagline": "Get In Touch",
+    "title": "Start a Dialogue",
+    "heading": "Let's Build Something That Endures.",
+    "description": "We partner with a select number of clients each quarter to ensure every project receives the attention it deserves. If you're ready to elevate your digital presence, we're ready to listen.",
+    "email": "hello@urdhvascens.com",
+    "phone": "+91 XXXXX XXXXX",
+    "location": "India"
+  }
+}
